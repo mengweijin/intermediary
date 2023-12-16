@@ -54,8 +54,9 @@ public abstract class AbstractDeploy implements Closeable {
             JschUtil.exec(session, command, StandardCharsets.UTF_8);
 
             if(monitorCmd() != null && monitorCmd().length > 0) {
-                log.info("monitor command: " + command);
-                SshMonitor.execAndMonitor(session, String.join(" && ", this.monitorCmd()));
+                String monitor = String.join(" && ", this.monitorCmd());
+                log.info("monitor command: " + monitor);
+                SshMonitor.execAndMonitor(session, monitor);
             }
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
