@@ -46,7 +46,7 @@ public class SftpMonitor implements SftpProgressMonitor {
                         isTransferredEnd = true;
                     }
                 }
-            }, 0, 2, TimeUnit.SECONDS);
+            }, 0, 5, TimeUnit.SECONDS);
         }
     }
 
