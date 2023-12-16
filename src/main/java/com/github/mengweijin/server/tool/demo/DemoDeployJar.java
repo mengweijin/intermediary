@@ -1,8 +1,11 @@
 package com.github.mengweijin.server.tool.demo;
 
+import cn.hutool.core.io.FileUtil;
 import com.github.mengweijin.server.tool.AbstractDeploy;
 import com.github.mengweijin.server.tool.Config;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
 
 /**
  * @author mengweijin
@@ -24,8 +27,9 @@ public class DemoDeployJar extends AbstractDeploy {
     }
 
     @Override
-    public String srcFilePath() {
-        return "D:\\code\\vitality\\target\\vitality-admin.jar";
+    public File srcFile() {
+        String path = "D:\\code\\vitality\\target\\vitality-admin.jar";
+        return FileUtil.file(path);
     }
 
     @Override

@@ -6,6 +6,7 @@ import cn.hutool.extra.ssh.Sftp;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -42,8 +43,8 @@ public abstract class AbstractDeploy {
             sftp.cd(uploadDir);
 
             //上传本地文件
-            log.info("upload file: " + this.srcFilePath());
-            sftp.put(this.srcFilePath(), uploadDir, new SftpMonitor(), Sftp.Mode.OVERWRITE);
+            log.info("upload file: " + this.srcFile().getAbsolutePath());
+            sftp.put(this.srcFile().getAbsolutePath(), uploadDir, new SftpMonitor(), Sftp.Mode.OVERWRITE);
 
             String command = String.join(" && ", this.serverCmd());
             log.info("exec server command: " + command);
@@ -64,7 +65,7 @@ public abstract class AbstractDeploy {
 
     public abstract String[] buildCmd();
 
-    public abstract String srcFilePath();
+    public abstract File srcFile();
 
     public abstract String[] serverCmd();
 }

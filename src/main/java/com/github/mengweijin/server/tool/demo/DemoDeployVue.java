@@ -28,10 +28,10 @@ public class DemoDeployVue extends AbstractDeploy {
     }
 
     @Override
-    public String srcFilePath() {
+    public File srcFile() {
         File zip = ZipUtil.zip("D:\\code\\vitality\\vitality-ui\\dist");
         log.info("Zipped file " + zip.getAbsolutePath());
-        return zip.getAbsolutePath();
+        return zip;
     }
 
     @Override
