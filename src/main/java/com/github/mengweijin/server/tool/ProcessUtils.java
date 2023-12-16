@@ -89,13 +89,8 @@ package com.github.mengweijin.server.tool;
  */
 
 import cn.hutool.core.util.RuntimeUtil;
-import lombok.AllArgsConstructor;
+import com.github.mengweijin.server.tool.thread.PrintTerminalDaemonThread;
 import lombok.extern.slf4j.Slf4j;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author mengweijin
@@ -112,8 +107,8 @@ public class ProcessUtils {
         try {
             process = RuntimeUtil.exec(cmd);
             // 读取子线程输入流和错误流
-            readInputCache(process);
-            readErrorCache(process);
+            new PrintTerminalDaemonThread(process.getInputStream()).start();
+            new PrintTerminalDaemonThread(process.getErrorStream()).start();
             // 阻塞，等待process的子进程执行完毕后继续执行
             int status = process.waitFor();
             if(status != 0) {
@@ -127,40 +122,4 @@ public class ProcessUtils {
         }
     }
 
-    private static void readInputCache(Process process) {
-        // 读取子进程的输入流
-        Thread inputDaemonThread = new ProcessDaemonThread(process.getInputStream());
-        // 设置成守护线程
-        inputDaemonThread.setDaemon(true);
-        inputDaemonThread.start();
-    }
-
-    private static void readErrorCache(Process process) {
-        // 读取子进程的错误流
-        Thread errorDaemonThread = new ProcessDaemonThread(process.getErrorStream());
-        // 设置成守护线程
-        errorDaemonThread.setDaemon(true);
-        errorDaemonThread.start();
-    }
-
-    @AllArgsConstructor
-    static class ProcessDaemonThread extends Thread {
-
-        private InputStream inputStream;
-
-        @Override
-        public void run() {
-            try (
-                    InputStreamReader inReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                    BufferedReader br = new BufferedReader(inReader)
-            ) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    log.debug(line);
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-    }
 }

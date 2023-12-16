@@ -44,4 +44,12 @@ public class DemoDeployJar extends AbstractDeploy {
                 "./app.sh start",
         };
     }
+
+    @Override
+    public String[] monitorCmd() {
+        return new String[]{
+                "cd " + workdir,
+                "tail -fn 500 ./logs/info.log",
+        };
+    }
 }

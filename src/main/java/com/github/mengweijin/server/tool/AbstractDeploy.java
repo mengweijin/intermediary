@@ -4,8 +4,10 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import cn.hutool.extra.ssh.Sftp;
 import com.jcraft.jsch.Session;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Closeable;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -14,7 +16,8 @@ import java.time.LocalDateTime;
  * @author mengweijin
  */
 @Slf4j
-public abstract class AbstractDeploy {
+@Getter
+public abstract class AbstractDeploy implements Closeable {
     protected Config config;
     protected String workdir;
     protected String uploadDir;
@@ -49,17 +52,14 @@ public abstract class AbstractDeploy {
             String command = String.join(" && ", this.serverCmd());
             log.info("exec server command: " + command);
             JschUtil.exec(session, command, StandardCharsets.UTF_8);
+
+            if(monitorCmd() != null && monitorCmd().length > 0) {
+                SshMonitor.execAndMonitor(session, String.join(" && ", this.monitorCmd()));
+            }
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
         } finally {
-            if(sftp != null){
-                log.info("close sftp......");
-                sftp.close();
-            }
-            if(sftp != null){
-                log.info("close session......");
-                session.disconnect();
-            }
+            this.close();
         }
     }
 
@@ -68,4 +68,18 @@ public abstract class AbstractDeploy {
     public abstract File srcFile();
 
     public abstract String[] serverCmd();
+
+    public abstract String[] monitorCmd();
+
+    @Override
+    public void close() {
+        if(sftp != null){
+            log.info("close sftp......");
+            sftp.close();
+        }
+        if(sftp != null){
+            log.info("close session......");
+            session.disconnect();
+        }
+    }
 }

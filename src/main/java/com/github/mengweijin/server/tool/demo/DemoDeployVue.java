@@ -44,4 +44,9 @@ public class DemoDeployVue extends AbstractDeploy {
                 "./nginx -s reload",
         };
     }
+
+    @Override
+    public String[] monitorCmd() {
+        return null;
+    }
 }
