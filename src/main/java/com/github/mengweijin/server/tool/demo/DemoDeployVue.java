@@ -46,6 +46,11 @@ public class DemoDeployVue extends AbstractDeploy {
     }
 
     @Override
+    public void cleanDeployedTempFile() {
+
+    }
+
+    @Override
     public String[] monitorCmd() {
         return null;
     }

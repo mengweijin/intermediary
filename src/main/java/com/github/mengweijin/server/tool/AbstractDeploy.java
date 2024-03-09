@@ -28,7 +28,7 @@ public abstract class AbstractDeploy implements Closeable {
     public AbstractDeploy(Config config) {
         this.config = config;
         this.workdir = config.getWorkdir();
-        uploadDir = config.getWorkdir() + "/upload_" + LocalDateTimeUtil.format(LocalDateTime.now(), "yyyy-MM-dd_HH_mm_ss");
+        uploadDir = config.getWorkdir() + "/upload_" + LocalDateTimeUtil.format(LocalDateTime.now(), "yyyy-MM-dd_HH_mm");
         this.session = JschUtil.createSession(config.getHost(), config.getPort(), config.getUser(), config.getPassword());
         this.sftp = JschUtil.createSftp(session);
     }
@@ -53,6 +53,9 @@ public abstract class AbstractDeploy implements Closeable {
             log.info("exec server command: " + command);
             JschUtil.exec(session, command, StandardCharsets.UTF_8);
 
+            log.info("clean temp file......");
+            this.cleanDeployedTempFile();
+
             if(monitorCmd() != null && monitorCmd().length > 0) {
                 String monitor = String.join(" && ", this.monitorCmd());
                 log.info("monitor command: " + monitor);
@@ -70,6 +73,8 @@ public abstract class AbstractDeploy implements Closeable {
     public abstract File srcFile();
 
     public abstract String[] serverCmd();
+
+    public abstract void cleanDeployedTempFile();
 
     public abstract String[] monitorCmd();
 

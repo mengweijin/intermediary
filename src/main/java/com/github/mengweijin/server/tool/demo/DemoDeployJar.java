@@ -46,6 +46,11 @@ public class DemoDeployJar extends AbstractDeploy {
     }
 
     @Override
+    public void cleanDeployedTempFile() {
+
+    }
+
+    @Override
     public String[] monitorCmd() {
         return new String[]{
                 "cd " + workdir,
