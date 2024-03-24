@@ -1,4 +1,4 @@
-package com.github.mengweijin.server.tool;
+package com.github.mengweijin.intermediary.util;
 
 /**
  * 在Java编写应用时，有时需要在程序中调用另一个线程的可执行程序或系统命令。
@@ -88,15 +88,15 @@ package com.github.mengweijin.server.tool;
  (3) 守护线程应该永远不去访问固有资源，如文件、数据库，因为它会在任何时候甚至在一个操作的中间发生中断。
  */
 
-import cn.hutool.core.util.RuntimeUtil;
-import com.github.mengweijin.server.tool.thread.PrintTerminalDaemonThread;
+import com.github.mengweijin.intermediary.util.thread.CmdPrintThread;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.hutool.core.util.RuntimeUtil;
 
 /**
  * @author mengweijin
  */
 @Slf4j
-public class ProcessUtils {
+public class ProcessMonitor {
     /**
      * @param command 命令行命令
      */
@@ -107,8 +107,8 @@ public class ProcessUtils {
         try {
             process = RuntimeUtil.exec(cmd);
             // 读取子线程输入流和错误流
-            new PrintTerminalDaemonThread(process.getInputStream()).start();
-            new PrintTerminalDaemonThread(process.getErrorStream()).start();
+            new CmdPrintThread(process.getInputStream()).start();
+            new CmdPrintThread(process.getErrorStream()).start();
             // 阻塞，等待process的子进程执行完毕后继续执行
             int status = process.waitFor();
             if(status != 0) {

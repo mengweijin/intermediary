@@ -1,26 +1,23 @@
-package com.github.mengweijin.server.tool.thread;
+package com.github.mengweijin.intermediary.util.thread;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author mengweijin
  * @date 2023/12/16
  */
 @Slf4j
-public class PrintSshThread extends Thread {
+public class CmdPrintThread extends Thread {
     private final InputStream inputStream;
-    private final CountDownLatch countDownLatch;
 
-    public PrintSshThread(InputStream in, CountDownLatch countDownLatch) {
+    public CmdPrintThread(InputStream in) {
         this.inputStream = in;
-        this.countDownLatch = countDownLatch;
+        this.setDaemon(true);
     }
 
     @Override
@@ -33,7 +30,6 @@ public class PrintSshThread extends Thread {
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
-            countDownLatch.countDown();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

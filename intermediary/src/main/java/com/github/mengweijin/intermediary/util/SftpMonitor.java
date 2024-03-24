@@ -1,8 +1,7 @@
-package com.github.mengweijin.server.tool;
+package com.github.mengweijin.intermediary.util;
 
 import com.jcraft.jsch.SftpProgressMonitor;
 import lombok.extern.slf4j.Slf4j;
-
 import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

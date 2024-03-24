@@ -1,21 +1,18 @@
-package com.github.mengweijin.server.tool;
+package com.github.mengweijin.intermediary.util;
 
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.ssh.ChannelType;
-import cn.hutool.extra.ssh.JschUtil;
-import com.github.mengweijin.server.tool.thread.PrintSshThread;
+import com.github.mengweijin.intermediary.util.thread.SftpPrintThread;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
-
+import org.dromara.hutool.core.io.IORuntimeException;
+import org.dromara.hutool.core.util.ByteUtil;
+import org.dromara.hutool.extra.ssh.engine.jsch.ChannelType;
+import org.dromara.hutool.extra.ssh.engine.jsch.JschUtil;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -24,31 +21,24 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class SshMonitor {
 
+    public static final Long TIMEOUT = 10000L;
+
     public static void execAndMonitor(Session session, String cmd) {
         final CountDownLatch countDownLatch = new CountDownLatch(2);
 
-        Charset charset = CharsetUtil.CHARSET_UTF_8;
-        final ChannelExec channel = (ChannelExec) JschUtil.createChannel(session, ChannelType.EXEC);
+        final ChannelExec channel = (ChannelExec) JschUtil.createChannel(session, ChannelType.EXEC, TIMEOUT);
         channel.setPty(false);
-        channel.setCommand(StrUtil.bytes(cmd, charset));
+        channel.setCommand(ByteUtil.toBytes(cmd, StandardCharsets.UTF_8));
 
-        InputStream in = null;
-        InputStream err = null;
-        try {
-            in = channel.getInputStream();
-            err = channel.getErrStream();
+        try(InputStream in = channel.getInputStream(); InputStream err = channel.getErrStream()) {
             channel.connect();
-
-            new PrintSshThread(in, countDownLatch).start();
-            new PrintSshThread(err, countDownLatch).start();
-
+            new SftpPrintThread(in, countDownLatch).start();
+            new SftpPrintThread(err, countDownLatch).start();
             countDownLatch.await();
         } catch (JSchException | IOException | InterruptedException e) {
             log.error(e.getMessage(), e);
             throw new IORuntimeException(e);
         } finally {
-            IoUtil.close(err);
-            IoUtil.close(in);
             JschUtil.close(channel);
         }
     }
@@ -69,10 +59,6 @@ public class SshMonitor {
     public static void printJschJarSupportedAlgorithm() {
         log.info("server_host_key: "+ JSch.getConfig("server_host_key"));
         log.info("kex: "+ JSch.getConfig("kex"));
-    }
-
-    public static void main(String[] args) {
-        SshMonitor.printJschJarSupportedAlgorithm();
     }
 
 }
