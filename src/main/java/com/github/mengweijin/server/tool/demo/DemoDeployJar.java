@@ -22,7 +22,7 @@ public class DemoDeployJar extends AbstractDeploy {
         return new String[]{
                 "cmd /c D:",
                 "cd D:\\code\\vitality",
-                "mvn clean package -Pdev",
+                "mvn clean package -Dmaven.test.skip=true -Pdev",
         };
     }
 
@@ -54,7 +54,7 @@ public class DemoDeployJar extends AbstractDeploy {
     public String[] monitorCmd() {
         return new String[]{
                 "cd " + workdir,
-                "tail -fn 500 ./logs/info.log",
+                "tail -f ./logs/info.log -n 500",
         };
     }
 }

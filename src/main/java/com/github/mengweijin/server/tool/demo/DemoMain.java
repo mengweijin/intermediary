@@ -3,6 +3,7 @@ package com.github.mengweijin.server.tool.demo;
 import com.github.mengweijin.server.tool.AbstractDeploy;
 import com.github.mengweijin.server.tool.Config;
 import com.github.mengweijin.server.tool.SshMonitor;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author mengweijin
@@ -19,18 +20,15 @@ public class DemoMain {
                 .build();
     }
 
-    public static void main(String[] args) {
-        deployJar();
-        deployVue();
-    }
-
-    public static void deployJar() {
+    @Test
+    public void deployJar() {
         try (AbstractDeploy deploy = new DemoDeployJar(config())) {
             deploy.run();
         }
     }
 
-    public static void deployVue() {
+    @Test
+    public void deployVue() {
         try (AbstractDeploy deploy = new DemoDeployVue(config())) {
             deploy.run();
         }
@@ -41,7 +39,7 @@ public class DemoMain {
             // "pwd" 命令本身不会阻塞终端，所以运行到这里，完成后会终止程序。
             SshMonitor.execAndMonitor(deploy.getSession(), "pwd");
             // "tail -fn" 命令本身就会阻塞终端，持续监控终端输出，所以运行到这里，即使没有新的日志，也会持续监控，不会终止程序。
-            SshMonitor.execAndMonitor(deploy.getSession(), "cd /ufc/logs && tail -fn 500 info.log");
+            SshMonitor.execAndMonitor(deploy.getSession(), "cd /opt/vitality/logs && tail -f info.log -n 500");
         }
     }
 }
