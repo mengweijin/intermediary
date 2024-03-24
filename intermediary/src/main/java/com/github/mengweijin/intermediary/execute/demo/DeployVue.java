@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
  * @author mengweijin
  */
 @Slf4j
-public class DemoDeployVue extends AbstractExecute {
+public class DeployVue extends AbstractExecute {
 
-    public DemoDeployVue(Connector connector) {
+    public DeployVue(Connector connector) {
         super(connector);
     }
 

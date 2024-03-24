@@ -8,24 +8,24 @@ import org.junit.jupiter.api.Test;
 /**
  * @author mengweijin
  */
-public class DemoMain {
+public class Main {
 
     Connector connector = Connector.of("127.0.0.1", 22, "root", "root");
 
     @Test
     public void deployJar() {
-        new DemoDeployJar(connector).execute();
+        new DeployJar(connector).execute();
     }
 
     @Test
     public void deployVue() {
-        new DemoDeployVue(connector).execute();
+        new DeployVue(connector).execute();
     }
 
 
     @Test
     public void monitor() {
-        try (DemoDeployJar demo = new DemoDeployJar(connector)) {
+        try (DeployJar demo = new DeployJar(connector)) {
             Session session = demo.getSession().getRaw();
             // "pwd" 命令本身不会阻塞终端，所以运行到这里，完成后会终止程序。
             SshMonitor.execAndMonitor(session, "pwd");
