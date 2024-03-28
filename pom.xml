@@ -10,9 +10,11 @@
     <name>intermediary-parent</name>
     <description>intermediary-parent</description>
     <url>https://gitee.com/mengweijin/intermediary</url>
+
     <modules> 
         <module>intermediary</module>
-    </modules>  
+        <module>intermediary-demo</module>
+    </modules>
 
     <!-- 开源许可证 -->  
     <licenses> 

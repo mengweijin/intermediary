@@ -1,5 +1,6 @@
 package com.github.mengweijin.intermediary.execute;
 
+import com.jcraft.jsch.JSchException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.extra.ssh.Connector;
@@ -26,10 +27,17 @@ public abstract class AbstractExecute implements IExecute {
     public AbstractExecute(Connector connector) {
         this.connector = connector;
         this.session = new JschSession(connector);
+        try {
+            log.info("open session......");
+            this.session.getRaw().connect();
+        } catch (JSchException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("open sftp......");
         this.sftp = this.session.openSftp(StandardCharsets.UTF_8);
     }
 
-    public abstract void run();
+    protected abstract void run();
 
     @Override
     public void execute() {

@@ -26,18 +26,18 @@ public class DeployJar extends AbstractExecute {
     String[] MAVEN_BUILD_CMD = new String[]{
             "cmd /C D:",
             "cd D:\\code\\vitality",
-            "mvn clean package -Dmaven.test.skip=true -Pdev",
+            "mvn clean package -Dmaven.test.skip=true -Ph2",
     };
 
-    File MAVEN_BUILD_TARGET_FILE = FileUtil.file("D:\\code\\vitality\\target\\vitality-admin.jar");
+    File MAVEN_BUILD_TARGET_FILE = FileUtil.file("D:\\code\\vitality\\vitality-admin\\target\\vitality-admin-1.4.1-SNAPSHOT.jar");
 
     String UPLOAD_DIR = "/opt/vitality/deploy_jar_" + TimeUtil.format(LocalDateTime.now(), "yyyy-MM-dd_HH_mm");
 
     String[] DEPLOY_CMD = new String[]{
-            "cmd /opt/vitality",
+            "cd /opt/vitality",
             "./app.sh stop",
             "rm -rf app.jar",
-            "cp " + UPLOAD_DIR + "/vitality-admin.jar /opt/vitality/app.jar",
+            "cp " + UPLOAD_DIR + "/vitality-admin-1.4.1-SNAPSHOT.jar /opt/vitality/app.jar",
             "./app.sh start",
     };
 
@@ -48,7 +48,7 @@ public class DeployJar extends AbstractExecute {
     };
 
     @Override
-    public void run() {
+    protected void run() {
         MavenTool.build(MAVEN_BUILD_CMD);
 
         SftpTool.upload(sftp, MAVEN_BUILD_TARGET_FILE, UPLOAD_DIR);
@@ -57,6 +57,6 @@ public class DeployJar extends AbstractExecute {
 
         MavenTool.clean(MAVEN_CLEAN_CMD);
 
-        SshMonitor.execAndMonitor(session.getRaw(), "cd /opt/vitality/logs && tail -f info.log -n 500");
+        SshMonitor.execAndMonitor(session.getRaw(), "cd /opt/vitality/logs/debug && tail -f debug.log -n 500");
     }
 }

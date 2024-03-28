@@ -36,17 +36,19 @@ public class DeployVue extends AbstractExecute {
 
     String UPLOAD_DIR = "/opt/vitality/deploy_vue_" + TimeUtil.format(LocalDateTime.now(), "yyyy-MM-dd_HH_mm");
 
-
+    /**
+     * unzip -q：不输出解压缩的详细信息
+     */
     String[] DEPLOY_CMD = new String[]{
             "cd " + UPLOAD_DIR,
             "rm -rf /usr/local/nginx/html",
-            "unzip -O CP936 -d /usr/local/nginx/html dist.zip",
+            "unzip -O CP936 -q -d /usr/local/nginx/html dist.zip",
             "cd /usr/local/nginx/sbin/",
             "./nginx -s reload",
     };
 
     @Override
-    public void run() {
+    protected void run() {
         MavenTool.build(NPM_BUILD_CMD);
 
         File zipFile = this.getNpmBuildTargetFile();

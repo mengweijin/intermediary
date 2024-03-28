@@ -5,40 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.mengweijin</groupId>
-    <artifactId>intermediary</artifactId>
+    <artifactId>intermediary-demo</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>intermediary</name>
-    <description>intermediary</description>
+    <name>intermediary-demo</name>
+    <description>intermediary-demo</description>
     <url>https://gitee.com/mengweijin/intermediary</url>
 
-    <!-- 开源许可证 -->
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <!-- 开发者信息 -->
-    <developers>
-        <developer>
-            <name>Meng Wei Jin</name>
-            <email>mengweijin.work@foxmail.com</email>
-        </developer>
-    </developers>
-    <!--开源地址-->
-    <scm>
-        <url>https://gitee.com/mengweijin/intermediary</url>
-    </scm>
-    <!--  Issue地址  -->
-    <issueManagement>
-        <system>Gitee Issue</system>
-        <url>https://gitee.com/mengweijin/intermediary/issues</url>
-    </issueManagement>
-
     <properties>
-        <!--    <gpg.skip>true</gpg.skip>-->
-        <!--    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>-->
         <skipTests>true</skipTests>
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -46,28 +20,20 @@
         <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <hutool.version>6.0.0-M11</hutool.version>
-        <jsch.version>0.2.17</jsch.version>
-        <logback.version>1.4.14</logback.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.dromara.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
+            <groupId>com.github.mengweijin</groupId>
+            <artifactId>intermediary</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.github.mwiede</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+            <version>8.3.0</version>
         </dependency>
 
         <dependency>
